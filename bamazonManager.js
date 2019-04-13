@@ -80,12 +80,6 @@ function addInventory(){
                 console.log("Updating stock...\n\n");
                 operations();
             });  
-            
-        
-            
-
-            
-
         })
     }
     con.query("SELECT * FROM products", function(err,res){
