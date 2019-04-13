@@ -24,14 +24,14 @@ con.query("SELECT * FROM products", function(err,res){
             "Stock: " + res[i].stock_quantity
         )
     };
-    console.log("\n\n\n")
+    console.log("\n\n\n");
     operations();
 })
 
 }
 
 function lowInventory(){
-    con.query("SELECT * FROM products WHERE stock_quantity < 20", function(err,res){
+    con.query("SELECT * FROM products WHERE stock_quantity < 5", function(err,res){
         if (err) throw err;
         console.log("Items with low inventory:")
         for(var i = 0; i < res.length; i++){
@@ -45,8 +45,103 @@ function lowInventory(){
     console.log("\n\n\n")
     operations();
     })
+};
+
+function addInventory(){
+    function adder(){
+        inquirer.prompt([
+            {
+                name: "id",
+                message: "What is the item id that you wish to add more of?",
+                type: "input"
+            },
+            {
+                name: "quantity",
+                messgae: "How many would you like to add?",
+                type: "input"   
+            }
+        ])
+        .then(function(answers){
+            var stock;
+            var id = parseFloat(answers.id);  
+            var quantity = parseFloat(answers.quantity);
+
+            function updateStock(){
+                con.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?",[stock,id],function(err,res){
+                if (err) throw err;
+                })
+            }
+                con.query("SELECT stock_quantity FROM products WHERE item_id =?",[id], function(err,result){
+                stock = result[0].stock_quantity;
+                if(err) throw err;
+                stock = stock + quantity;
+                console.log(stock, "new stock");
+                updateStock();
+                console.log("\n\n");
+                adder(); 
+            });  
+            
+        
+            
+
+            
+
+        })
+    }
+    con.query("SELECT * FROM products", function(err,res){
+        if (err) throw err;
+        for(var i = 0; i < res.length; i++){
+            console.log(
+                "Item ID: " + res[i].item_id + " | " +
+                "Product: " + res[i].product_name + " | " +
+                "Price: " + res[i].price + " | " +
+                "Stock: " + res[i].stock_quantity
+            )
+        };
+        console.log("\n\n");
+        adder();   
+    }) 
+      
 }
 
+function addProduct(){
+    inquirer.prompt([
+        {
+            name: "product",
+            message: "What is the name of the item?",
+            type: "input"
+        },
+        {
+            name: "department",
+            message: "What department is the item in?",
+            type: "input"
+        },
+        {
+            name: "price",
+            message: "What is the price of the item?",
+            type: "input"
+        },
+        {
+            name: "quantity",
+            message: "What is the quantity of  inventory of the item?",
+            type: "input"
+        }
+    ])
+    .then(function(answers){
+        var product = answers.product;
+        var department = answers.department;
+        var price = parseInt(answers.price);
+        var quantity = parseInt(answers.quantity);
+        con.query("INSERT INTO products SET ?", {
+            product_name: product,
+            department_name: department,
+            price: price,
+            stock_quantity: quantity,
+        });
+        console.log("\n\n");
+        operations();
+    })
+}
 
 function operations(){
     inquirer.prompt([
@@ -70,9 +165,9 @@ function operations(){
             break;
             case "View Low Inventory": lowInventory();
             break;
-            case "Add to Inventory": console.log("added inventory"), operations()
+            case "Add to Inventory": addInventory();
             break;
-            case "Add New Product": console.log("product added"), operations()
+            case "Add New Product": addProduct()
             break;
             case "Exit": con.end()
             break;
