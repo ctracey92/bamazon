@@ -75,10 +75,10 @@ function addInventory(){
                 stock = result[0].stock_quantity;
                 if(err) throw err;
                 stock = stock + quantity;
-                console.log(stock, "new stock");
+
                 updateStock();
-                console.log("\n\n");
-                adder(); 
+                console.log("Updating stock...\n\n");
+                operations();
             });  
             
         
@@ -138,7 +138,7 @@ function addProduct(){
             price: price,
             stock_quantity: quantity,
         });
-        console.log("\n\n");
+        console.log("Adding in product...\n\n");
         operations();
     })
 }
