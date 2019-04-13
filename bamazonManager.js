@@ -30,6 +30,23 @@ con.query("SELECT * FROM products", function(err,res){
 
 }
 
+function lowInventory(){
+    con.query("SELECT * FROM products WHERE stock_quantity < 20", function(err,res){
+        if (err) throw err;
+        console.log("Items with low inventory:")
+        for(var i = 0; i < res.length; i++){
+        console.log(
+            "Item ID: " + res[i].item_id + " | " +
+            "Product: " + res[i].product_name + " | " +
+            "Price: " + res[i].price + " | " +
+            "Stock: " + res[i].stock_quantity
+        )
+    };
+    console.log("\n\n\n")
+    operations();
+    })
+}
+
 
 function operations(){
     inquirer.prompt([
@@ -51,7 +68,7 @@ function operations(){
         switch(answer){
             case "View Products for Sale": inventory() 
             break;
-            case "View Low Inventory": console.log("low inventory"), operations()
+            case "View Low Inventory": lowInventory();
             break;
             case "Add to Inventory": console.log("added inventory"), operations()
             break;
