@@ -18,6 +18,7 @@ function ask (){
             var price = parseInt(result[0].price);
             var stockLeft = stock - answersNumber; 
             var totalPrice = answersNumber * price;
+            var sales = parseInt(result[0].product_sales);
             if(answersNumber>stock){
                 console.log("Not enough inventory");
             }
@@ -26,6 +27,10 @@ function ask (){
                     if (err) throw err;
                 })
                 console.log("You bought: " + answersNumber + " "+ result[0].product_name + "'s for a total of " + totalPrice + "$" )
+                sales = sales + totalPrice;
+                con.query("UPDATE products SET product_sales = ? WHERE item_id = ?",[sales,answersId]),function(err,res){
+                    if(err) throw err;
+                }
             }
             ask();
         })
