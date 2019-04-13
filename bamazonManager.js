@@ -13,6 +13,24 @@ con.connect(function(err){
     if (err) throw err;
 })
 
+function inventory(){
+con.query("SELECT * FROM products", function(err,res){
+    if (err) throw err;
+    for(var i = 0; i < res.length; i++){
+        console.log(
+            "Item ID: " + res[i].item_id + " | " +
+            "Product: " + res[i].product_name + " | " +
+            "Price: " + res[i].price + " | " +
+            "Stock: " + res[i].stock_quantity
+        )
+    };
+    console.log("\n\n\n")
+    operations();
+})
+
+}
+
+
 function operations(){
     inquirer.prompt([
     {
@@ -31,7 +49,7 @@ function operations(){
     .then(function(answers){
         var answer = answers.action;
         switch(answer){
-            case "View Products for Sale": console.log("products"), operations()
+            case "View Products for Sale": inventory() 
             break;
             case "View Low Inventory": console.log("low inventory"), operations()
             break;
