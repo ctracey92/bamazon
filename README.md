@@ -18,7 +18,7 @@ A mock amazon app that runs via node in your console. The app has 3 levels to it
     - The supervisor view allows the client to create a new department, and to view the statistics of the current departments. 
 
 *Video Demonstrations*
-[DemoVideo]()
+[DemoVideo](https://drive.google.com/open?id=1uiqaWxaUjMHqJFfRsDWwKsAcZgJu0-Kl)
 
 * Objective
     - The main point of this objective is to demonstrate the mastery of MYSQL queries in NODE. 
