@@ -1,6 +1,8 @@
+//Require the NPM packages we will need
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
+//Set up the connection vairable.
 var con = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -9,11 +11,14 @@ var con = mysql.createConnection({
   database: "bamazon"
 });
 
+//Connect to the database.
 con.connect(function(err){
     if (err) throw err;
 })
 
+//Function to display the inventory.
 function inventory(){
+    //Selects all products from the database and displays them.
 con.query("SELECT * FROM products", function(err,res){
     if (err) throw err;
     for(var i = 0; i < res.length; i++){
@@ -25,13 +30,16 @@ con.query("SELECT * FROM products", function(err,res){
         )
     };
     console.log("\n\n\n");
+    //Calls back the operations function.
     operations();
 })
 
 }
 
+//Displays inventory with 5 or less units remaining. 
 function lowInventory(){
-    con.query("SELECT * FROM products WHERE stock_quantity < 5", function(err,res){
+    //Selects only products with 5 or less units and displays them to the console.
+    con.query("SELECT * FROM products WHERE stock_quantity <= 5", function(err,res){
         if (err) throw err;
         console.log("Items with low inventory:")
         for(var i = 0; i < res.length; i++){
@@ -43,11 +51,14 @@ function lowInventory(){
         )
     };
     console.log("\n\n\n")
+    //Callsback the operations function.
     operations();
     })
 };
 
+//Add to exisiting inventory.
 function addInventory(){
+    //Prompts the user for the necesary input
     function adder(){
         inquirer.prompt([
             {
@@ -62,10 +73,12 @@ function addInventory(){
             }
         ])
         .then(function(answers){
+            //Parses the answers into numbers and saves as variables. 
             var stock;
             var id = parseFloat(answers.id);  
             var quantity = parseFloat(answers.quantity);
 
+            //Updates the stock item with the matching ID.
             function updateStock(){
                 con.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?",[stock,id],function(err,res){
                 if (err) throw err;
@@ -76,8 +89,11 @@ function addInventory(){
                 if(err) throw err;
                 stock = stock + quantity;
 
+                //Runs the stock update
                 updateStock();
                 console.log("Updating stock...\n\n");
+
+                //Callsback the operations vatiable.
                 operations();
             });  
         })
@@ -98,7 +114,9 @@ function addInventory(){
       
 }
 
+//Add a new product.
 function addProduct(){
+    //Prompts the user for the necesary fields.
     inquirer.prompt([
         {
             name: "product",
@@ -122,10 +140,12 @@ function addProduct(){
         }
     ])
     .then(function(answers){
+        //Grabs the answers and saves into variables (parses where needed)
         var product = answers.product;
         var department = answers.department;
         var price = parseInt(answers.price);
         var quantity = parseInt(answers.quantity);
+        //Inserts the product into the table.
         con.query("INSERT INTO products SET ?", {
             product_name: product,
             department_name: department,
@@ -133,10 +153,12 @@ function addProduct(){
             stock_quantity: quantity,
         });
         console.log("Adding in product...\n\n");
+        //Callsback the operations function.
         operations();
     })
 }
 
+//Asks the user which operation they would like to run and then executes it.
 function operations(){
     inquirer.prompt([
     {
