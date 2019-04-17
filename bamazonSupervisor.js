@@ -19,12 +19,13 @@ function view(){
     //     console.table("Stats",res)
     // })
 
-    con.query("SELECT department_id,departments.department_name,over_head_costs,products.product_sales FROM departments LEFT JOIN products on departments.department_name = products.department_name SUM product_sales GROUP BY department_id s",function(err,res){
+    con.query("SELECT department_id,departments.department_name,over_head_costs,SUM(products.product_sales) AS product_sales ,SUM(products.product_sales)-over_head_costs as total_profits FROM departments LEFT JOIN products on departments.department_name = products.department_name GROUP BY department_id ORDER BY department_id",function(err,res){
         if(err)throw err;
         console.log("\n")
         console.table("Department Statistics",res);
         command();
     })
+
 
 }
 
