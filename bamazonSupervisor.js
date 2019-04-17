@@ -11,18 +11,15 @@ var con = mysql.createConnection({
     database: "bamazon"
 });
 
-
+//Function to view department stats
 function view(){
-
-    // con.query("SELECT department_name SUM product_sales FROM products GROUP BY department_name",function(err,res){
-    //     if(err) throw err;
-    //     console.table("Stats",res)
-    // })
-
+//When the function runs it displays the department statistics, and adds in a colum for profit that is only saved in memory.
     con.query("SELECT department_id,departments.department_name,over_head_costs,SUM(products.product_sales) AS product_sales ,SUM(products.product_sales)-over_head_costs as total_profits FROM departments LEFT JOIN products on departments.department_name = products.department_name GROUP BY department_id ORDER BY department_id",function(err,res){
         if(err)throw err;
         console.log("\n")
+        //Console tables the results
         console.table("Department Statistics",res);
+        //callsback the command function
         command();
     })
 
